@@ -9,11 +9,26 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet var textFields: [UITextField]!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        textFields.first?.text = "洪展彬"
+        textFields[1].text = "Justin"
     }
 
-
+    
+    @IBAction func touchReturn(_ sender: Any) {
+    }
+    
+    @IBAction func tapTouch(_ sender: Any) {
+        view.endEditing(true)
+    }
+    
+    @IBAction func goToCalculator(_ sender: Any) {
+        let calculatorVC = CalculatorViewController()
+        self.navigationController?.pushViewController(calculatorVC, animated: true)
+    }
 }
 

@@ -13,6 +13,9 @@
 		32E271BD2581196200C21F28 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32E271BB2581196200C21F28 /* Main.storyboard */; };
 		32E271BF2581196500C21F28 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32E271BE2581196500C21F28 /* Assets.xcassets */; };
 		32E271C22581196500C21F28 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32E271C02581196500C21F28 /* LaunchScreen.storyboard */; };
+		32E271CD258119B000C21F28 /* CalculatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E271CB258119B000C21F28 /* CalculatorViewController.swift */; };
+		32E271CE258119B000C21F28 /* CalculatorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 32E271CC258119B000C21F28 /* CalculatorViewController.xib */; };
+		32E271D225822C9200C21F28 /* OperationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E271D125822C9100C21F28 /* OperationType.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +27,9 @@
 		32E271BE2581196500C21F28 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		32E271C12581196500C21F28 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		32E271C32581196500C21F28 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		32E271CB258119B000C21F28 /* CalculatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorViewController.swift; sourceTree = "<group>"; };
+		32E271CC258119B000C21F28 /* CalculatorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CalculatorViewController.xib; sourceTree = "<group>"; };
+		32E271D125822C9100C21F28 /* OperationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,13 +64,32 @@
 			children = (
 				32E271B52581196200C21F28 /* AppDelegate.swift */,
 				32E271B72581196200C21F28 /* SceneDelegate.swift */,
-				32E271B92581196200C21F28 /* ViewController.swift */,
 				32E271BB2581196200C21F28 /* Main.storyboard */,
 				32E271BE2581196500C21F28 /* Assets.xcassets */,
+				32E271CA2581197200C21F28 /* ViewControllers */,
+				32E271D025822C6200C21F28 /* Model */,
 				32E271C02581196500C21F28 /* LaunchScreen.storyboard */,
 				32E271C32581196500C21F28 /* Info.plist */,
 			);
 			path = CalculatorProject_Swift;
+			sourceTree = "<group>";
+		};
+		32E271CA2581197200C21F28 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				32E271B92581196200C21F28 /* ViewController.swift */,
+				32E271CB258119B000C21F28 /* CalculatorViewController.swift */,
+				32E271CC258119B000C21F28 /* CalculatorViewController.xib */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		32E271D025822C6200C21F28 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				32E271D125822C9100C21F28 /* OperationType.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -126,6 +151,7 @@
 			files = (
 				32E271C22581196500C21F28 /* LaunchScreen.storyboard in Resources */,
 				32E271BF2581196500C21F28 /* Assets.xcassets in Resources */,
+				32E271CE258119B000C21F28 /* CalculatorViewController.xib in Resources */,
 				32E271BD2581196200C21F28 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -139,6 +165,8 @@
 			files = (
 				32E271BA2581196200C21F28 /* ViewController.swift in Sources */,
 				32E271B62581196200C21F28 /* AppDelegate.swift in Sources */,
+				32E271CD258119B000C21F28 /* CalculatorViewController.swift in Sources */,
+				32E271D225822C9200C21F28 /* OperationType.swift in Sources */,
 				32E271B82581196200C21F28 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
