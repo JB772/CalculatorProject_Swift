@@ -33,15 +33,30 @@ class CalculatorViewController: UIViewController {
         print("opearationNumber~########\(operateNumber)")
         let inputKey = sender.tag
         var resultText = resultLabel.text
-        if resultText!.count >= 3 {
-            if beforFormatLabelStr.hasSuffix(".") {
-                print("檢查before尾有. :\(beforFormatLabelStr)")
-                resultText = formatDoubleStr2String(resultText!) + "."
-                beforFormatLabelStr = ""
-            }else{
-                resultText = formatDoubleStr2String(resultText!)
+        
+        //去千分符號
+        if resultText!.count > 3 {
+            resultText = formatDoubleStr2String(resultText!)
+        }
+        
+        //檢查小數點
+        if beforFormatLabelStr.contains(".") {
+            if floor(labelNumber) == labelNumber {
+                //先把小數點前的字串取出
+                let beforePointStr = "\(Int(labelNumber))"
+                print("beforPointStr~~~Line47: \(beforePointStr)")
+                let beforePointCount = beforePointStr.count
+                //小數點及之後字串
+                let afterStrRange = beforFormatLabelStr.index(beforFormatLabelStr.startIndex, offsetBy: beforePointCount)..<beforFormatLabelStr.endIndex
+                let afterStr = beforFormatLabelStr[afterStrRange]
+                print("afterStr~~~~Line52: \(afterStr)")
+                resultText = formatDoubleStr2String(resultText!) + afterStr
+//                resultText = formatDoubleStr2String(resultText!) + "."
             }
         }
+        
+        beforFormatLabelStr = ""
+        
         //判斷是否要重來
         if isNewRecord {
             isNewRecord = false
@@ -50,25 +65,39 @@ class CalculatorViewController: UIViewController {
                 resultLabel.text = "\(inputKey)"
                 resultText = "\(inputKey)"
             }else{
-                resultLabel.text = "0."
-                resultText = "0."
+                resultLabel.text = resultText! + "."
+                resultText! += "."
             }
         }else{
             priorType = operationType
             if resultText == "0" || resultText == "+" || resultText == "-" || resultText == "x" || resultText == "÷" {
                 if inputKey != 10 {
+                    print("resultText == 0    \(resultText)")
 //                    resultLabel.text = "\(inputKey)"
                     resultLabel.text = formatDouble2String(Double(inputKey))
                     resultText = "\(inputKey)"
                 }else{
-                    print("I'm here~~~~~")
-                    resultLabel.text = "0."
-                    resultText! += "0."
+                    resultLabel.text = resultText! + "."
+                    resultText! += "."
                 }
             }else{
                 if inputKey != 10 {
-//                    resultLabel.text = resultText! + "\(inputKey)"
-                    resultLabel.text = formatDouble2String(Double(resultText! + "\(inputKey)")!)
+                    print("I'm here Line85: resultText:\(resultText)")
+
+                    if resultText!.contains(".") {
+                        //先把小數點前的字串取出
+                        let beforePointStr = "\(Int(labelNumber))"
+                        print("beforPointStr~~~Line90: \(beforePointStr)")
+                        let beforePointCount = beforePointStr.count
+                        //小數點及之後字串
+                        let afterStrRange = resultText!.index(resultText!.startIndex, offsetBy: beforePointCount)..<resultText!.endIndex
+                        let afterStr = resultText![afterStrRange]
+                        print("afterStr~~~~Line95: \(afterStr)")
+                        
+                        resultLabel.text = formatDouble2String(Double(beforePointStr)!) + afterStr + "\(inputKey)"
+                    }else {
+                        resultLabel.text = formatDouble2String(Double(resultText! + "\(inputKey)")!)
+                    }
                     resultText! += "\(inputKey)"
                 }else{
                     if !(resultText?.contains("."))! {
