@@ -52,6 +52,8 @@ class CalculatorViewController: UIViewController {
                 print("afterStr~~~~Line52: \(afterStr)")
                 resultText = formatDoubleStr2String(resultText!) + afterStr
 //                resultText = formatDoubleStr2String(resultText!) + "."
+            } else if beforFormatLabelStr.hasSuffix("0") {
+                resultText = formatDoubleStr2String(resultText!) + "0"
             }
         }
         
@@ -72,8 +74,6 @@ class CalculatorViewController: UIViewController {
             priorType = operationType
             if resultText == "0" || resultText == "+" || resultText == "-" || resultText == "x" || resultText == "÷" {
                 if inputKey != 10 {
-                    print("resultText == 0    \(resultText)")
-//                    resultLabel.text = "\(inputKey)"
                     resultLabel.text = formatDouble2String(Double(inputKey))
                     resultText = "\(inputKey)"
                 }else{
@@ -82,38 +82,34 @@ class CalculatorViewController: UIViewController {
                 }
             }else{
                 if inputKey != 10 {
-                    print("I'm here Line85: resultText:\(resultText)")
-
                     if resultText!.contains(".") {
                         //先把小數點前的字串取出
                         let beforePointStr = "\(Int(labelNumber))"
-                        print("beforPointStr~~~Line90: \(beforePointStr)")
+                        print("beforPointStr~~~Line88: \(beforePointStr)")
                         let beforePointCount = beforePointStr.count
                         //小數點及之後字串
                         let afterStrRange = resultText!.index(resultText!.startIndex, offsetBy: beforePointCount)..<resultText!.endIndex
                         let afterStr = resultText![afterStrRange]
-                        print("afterStr~~~~Line95: \(afterStr)")
+                        print("afterStr~~~~Line93: \(afterStr)")
                         
-                        resultLabel.text = formatDouble2String(Double(beforePointStr)!) + afterStr + "\(inputKey)"
+                        resultLabel.text = changeLabelTextSize(formatDouble2String(Double(beforePointStr)!) + afterStr + "\(inputKey)")
+                        
                     }else {
-                        resultLabel.text = formatDouble2String(Double(resultText! + "\(inputKey)")!)
+                        resultLabel.text = changeLabelTextSize(formatDouble2String(Double(resultText! + "\(inputKey)")!))
                     }
                     resultText! += "\(inputKey)"
                 }else{
                     if !(resultText?.contains("."))! {
 //                        resultLabel.text = resultText! + "."
-                        resultLabel.text = formatDouble2String(Double(resultText!)!) + "."
+                        resultLabel.text = changeLabelTextSize(formatDouble2String(Double(resultText!)!) + ".")
                         resultText! += "."
                         
                     }
                 }
             }
         }
-//        resultLabel.text = resultText
         labelNumber = Double(resultText!) ?? 0
         beforFormatLabelStr = resultText!
-        print("beforFormatLabelStr: \(beforFormatLabelStr)")
-        print("\(labelNumber)")
     }
     
     //清除
@@ -133,11 +129,29 @@ class CalculatorViewController: UIViewController {
             }
         }
         labelNumber = Double(resultLabel.text!) ?? 0
+        operateNumber = labelNumber
     }
     
     //乘階
     @IBAction func factorialClick(_ sender: Any) {
-        
+        var factoriaNumber: Double = 1
+        //判斷是否為正整數
+        if floor(labelNumber) == labelNumber && labelNumber >= 0 && labelNumber <= 20 {
+            if labelNumber == 0 {
+                factoriaNumber = 0
+            }else {
+                for i in stride(from: labelNumber, to: 0, by: -1) {
+                    factoriaNumber = factoriaNumber * i
+                }
+            }
+            zeroResultLabel()
+            labelNumber = factoriaNumber
+            resultLabel.text = changeLabelTextSize(formatDouble2String(factoriaNumber))
+        }else if labelNumber > 20 {
+            useAlert(title: "超過運算範圍", message: "此功能只能運算小於20的數。")
+        } else {
+            useAlert(title: "該數值無法運算", message: "請輸入一個正整數。")
+        }
     }
     
     //運算按鈕
@@ -193,7 +207,8 @@ class CalculatorViewController: UIViewController {
 //        var answerNumber: Double = 0
         if isOperating {
             tempNumber = calculating(operationType: priorType, operateNumber: operateNumber, labelNumber: labelNumber)
-            resultLabel.text = formatDouble2String(tempNumber)
+            print("tempNumber: \(formatDouble2String(tempNumber))")
+            resultLabel.text = changeLabelTextSize(formatDouble2String(tempNumber))
             print("###operateNumberFinal###~\(operateNumber)")
             print("###labelNumberFinal###~\(labelNumber)")
             print("~~~~~~~~finalTempNumber\(tempNumber)")
@@ -215,16 +230,22 @@ class CalculatorViewController: UIViewController {
         case .multiplication:
             theAnswer = (operateNumber * labelNumber)
         case .division:
-            theAnswer = (operateNumber / labelNumber)
+            if labelNumber != 0 {
+                theAnswer = (operateNumber / labelNumber)
+            }else {
+                useAlert(title: "該數值無法運算", message: "除數不以為0喔！！")
+                break
+            }
         case .stopping:
             print("operationType is stopping")
+            self.zeroResultLabel()
         }
         return theAnswer
     }
     
     //歸零
     func zeroResultLabel() {
-        resultLabel.text = "0"
+        resultLabel.text = changeLabelTextSize("0")
         labelNumber = 0
         operateNumber = 0
         operationType = .stopping
@@ -232,38 +253,62 @@ class CalculatorViewController: UIViewController {
         isOperating = false
         isNewRecord = true
         calculateCount = 0
+        
+    }
+    
+    //動態改label textSize
+    func changeLabelTextSize(_ textString: String)-> String {
+        let textStr = textString
+        var labelTextSize: CGFloat = 10
+        switch textStr.count {
+        case 0..<9:
+            labelTextSize = 60
+        case 9..<18:
+            labelTextSize = 40
+        case 18..<26:
+            labelTextSize = 30
+        default:
+            useAlert(title: "超過運算範圍", message: "您輸入的位數太多了，請輸入小一點的數。")
+        }
+        resultLabel.font = UIFont.systemFont(ofSize: labelTextSize)
+        
+        return textStr
     }
     
     //格式化
     func formatDouble2String(_ number: Double) -> String {
         print("formatNumber\(number)")
         var tempText :String = ""
-        let numberDouble = NSNumber(value: number)
+        var pointNumberStr: String = ""
         let myFormater = NumberFormatter()
-        myFormater.positiveFormat = "#,##0.##############"
+        myFormater.positiveFormat = "#,##0.###############"
         
-        if floor(number) == number {
-            //整數處理
-            tempText = myFormater.string(from: numberDouble)!
-            if tempText.count >= 15 {
-                print("超過15位數count~~\(tempText.count)~~tempText:\(tempText)")
-                tempText = "超過運算範圍"
-            }
-        }else {
-            //小數處理
-            tempText = myFormater.string(from: numberDouble)!
-            if tempText.count >= 15 {
-                tempText = String(tempText.prefix(15))
+        
+        //整數字串
+        let integerOfNumber: Double = floor(number)
+//        let integerOfNumberStr = String(Int(integerOfNumber))
+        let integerOfNumberStr = myFormater.string(from: NSNumber(value: Int(integerOfNumber))) ?? "0"
+        print("integerOfNumberStr: \(integerOfNumberStr)")
+        
+        //小數位數處理 -> 字串
+        if floor(number) != number {
+            let currentStr = myFormater.string(from: NSNumber(value: number)) ?? "0"
+            pointNumberStr = currentStr.replacingOccurrences(of: integerOfNumberStr, with: "0")
+            pointNumberStr.remove(at: pointNumberStr.startIndex)
+            print("RemoveStarIndexPointNumberStr: \(pointNumberStr)")
+            if pointNumberStr.count >= 17 {
+                pointNumberStr = String(pointNumberStr.prefix(16))
             }
         }
         
-//        resultLabel.text = tempText
+        tempText = integerOfNumberStr + pointNumberStr
+        print("tempText: \(tempText)")
+        
         return tempText
     }
     
     //去千分位格式
     func formatDoubleStr2String(_ text: String) -> String {
-        print("formatDoubleStr2String~~~Before: \(text)")
         var formatStr: String = ""
         let myFormatter = NumberFormatter()
         myFormatter.positiveFormat = "#,##0.##############"
@@ -278,11 +323,16 @@ class CalculatorViewController: UIViewController {
             let range = formatStr.index(formatStr.endIndex, offsetBy: -2)..<formatStr.endIndex
             formatStr.removeSubrange(range)
         }
-        
-        print("formatDoubleStr2String~~~:formatStr~~~~~~~  \(formatStr)")
         return formatStr
     }
     
-    
+    func useAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default) { (actionOk) in
+            self.zeroResultLabel()
+        }
+        alertController.addAction(okAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
     
 }
