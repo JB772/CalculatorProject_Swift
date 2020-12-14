@@ -27,7 +27,17 @@ class ViewController: UIViewController {
     }
     
     @IBAction func goToCalculator(_ sender: Any) {
+
+        let myName = textFields.first?.text ?? ""
+        if myName.isEmpty {
+            let alertController = UIAlertController(title: "請填入姓名", message: "欄位不可空白", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "好", style: .default, handler: nil)
+            alertController.addAction(okAction)
+            self.present(alertController, animated: true, completion: nil)
+        }
+        
         let calculatorVC = CalculatorViewController()
+        calculatorVC.authorName = myName
         self.navigationController?.pushViewController(calculatorVC, animated: true)
     }
 }

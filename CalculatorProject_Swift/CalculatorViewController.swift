@@ -12,6 +12,7 @@ class CalculatorViewController: UIViewController {
     
     @IBOutlet weak var resultLabel: UILabel!
     
+    var authorName: String?
     var labelNumber: Double = 0
     var operateNumber: Double = 0
     var tempNumber: Double = 0
@@ -24,13 +25,15 @@ class CalculatorViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        guard let myName = authorName else { return }
+        self.title = "\(myName)'s Calculator"
         
         zeroResultLabel()
     }
 
     //數字 & 小數點
     @IBAction func numbers(_ sender: UIButton) {
-        print("opearationNumber~########\(operateNumber)")
+        print("opearationNumber~~~~~~~~Line36: \(operateNumber)")
         let inputKey = sender.tag
         var resultText = resultLabel.text
         
@@ -123,9 +126,10 @@ class CalculatorViewController: UIViewController {
         let resultText = resultLabel.text
         if resultText != "0" {
             if !(resultText!.contains("-")) {
-                resultLabel.text = "-\(resultText!)"
+                resultLabel.text = changeLabelTextSize(formatDouble2String(Double("-\(resultText!)") ?? 0))
             }else{
-                resultLabel.text = resultText?.replacingOccurrences(of: "-", with: "")
+                guard let transeStr = resultText?.replacingOccurrences(of: "-", with: "") else { return }
+                resultLabel.text = changeLabelTextSize(formatDouble2String(Double(transeStr) ?? 0))
             }
         }
         labelNumber = Double(resultLabel.text!) ?? 0
@@ -207,7 +211,6 @@ class CalculatorViewController: UIViewController {
 //        var answerNumber: Double = 0
         if isOperating {
             tempNumber = calculating(operationType: priorType, operateNumber: operateNumber, labelNumber: labelNumber)
-            print("tempNumber: \(formatDouble2String(tempNumber))")
             resultLabel.text = changeLabelTextSize(formatDouble2String(tempNumber))
             print("###operateNumberFinal###~\(operateNumber)")
             print("###labelNumberFinal###~\(labelNumber)")
@@ -259,13 +262,13 @@ class CalculatorViewController: UIViewController {
     //動態改label textSize
     func changeLabelTextSize(_ textString: String)-> String {
         let textStr = textString
-        var labelTextSize: CGFloat = 10
+        var labelTextSize: CGFloat = 30
         switch textStr.count {
         case 0..<9:
-            labelTextSize = 60
+            labelTextSize = 67
         case 9..<18:
-            labelTextSize = 40
-        case 18..<26:
+            labelTextSize = 47
+        case 18..<22:
             labelTextSize = 30
         default:
             useAlert(title: "超過運算範圍", message: "您輸入的位數太多了，請輸入小一點的數。")
@@ -285,8 +288,10 @@ class CalculatorViewController: UIViewController {
         
         
         //整數字串
-        let integerOfNumber: Double = floor(number)
-//        let integerOfNumberStr = String(Int(integerOfNumber))
+        var integerOfNumber: Double = floor(number)
+        if floor(number) != number {
+            integerOfNumber += 1
+        }
         let integerOfNumberStr = myFormater.string(from: NSNumber(value: Int(integerOfNumber))) ?? "0"
         print("integerOfNumberStr: \(integerOfNumberStr)")
         
@@ -312,10 +317,8 @@ class CalculatorViewController: UIViewController {
         var formatStr: String = ""
         let myFormatter = NumberFormatter()
         myFormatter.positiveFormat = "#,##0.##############"
-//        formatDouble = strFormater.number(from: text) as! Double
 
         if let number = myFormatter.number(from: text) {
-//            formatStr = "\(number.decimalValue)"
             formatStr = "\(number.doubleValue)"
         }
         
@@ -326,6 +329,7 @@ class CalculatorViewController: UIViewController {
         return formatStr
     }
     
+    //alert
     func useAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default) { (actionOk) in
