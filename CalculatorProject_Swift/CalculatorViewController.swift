@@ -126,13 +126,17 @@ class CalculatorViewController: UIViewController {
         let resultText = resultLabel.text
         if resultText != "0" {
             if !(resultText!.contains("-")) {
-                resultLabel.text = changeLabelTextSize(formatDouble2String(Double("-\(resultText!)") ?? 0))
+//                resultLabel.text = changeLabelTextSize(formatDouble2String(Double("-\(resultText!)") ?? 0))
+                resultLabel.text = changeLabelTextSize("-" + resultText!)
+                print("加 - 號: \(resultLabel.text)")
             }else{
                 guard let transeStr = resultText?.replacingOccurrences(of: "-", with: "") else { return }
-                resultLabel.text = changeLabelTextSize(formatDouble2String(Double(transeStr) ?? 0))
+//                resultLabel.text = changeLabelTextSize(formatDouble2String(Double(transeStr) ?? 0))
+                resultLabel.text = changeLabelTextSize(transeStr)
+                print("去 - 號: \(resultLabel.text)")
             }
         }
-        labelNumber = Double(resultLabel.text!) ?? 0
+        labelNumber = Double(formatDoubleStr2String(resultLabel.text!)) ?? 0
         operateNumber = labelNumber
     }
     
@@ -289,7 +293,7 @@ class CalculatorViewController: UIViewController {
         
         //整數字串
         var integerOfNumber: Double = floor(number)
-        if floor(number) != number {
+        if floor(number) != number && number < 0{
             integerOfNumber += 1
         }
         let integerOfNumberStr = myFormater.string(from: NSNumber(value: Int(integerOfNumber))) ?? "0"
@@ -301,8 +305,8 @@ class CalculatorViewController: UIViewController {
             pointNumberStr = currentStr.replacingOccurrences(of: integerOfNumberStr, with: "0")
             pointNumberStr.remove(at: pointNumberStr.startIndex)
             print("RemoveStarIndexPointNumberStr: \(pointNumberStr)")
-            if pointNumberStr.count >= 17 {
-                pointNumberStr = String(pointNumberStr.prefix(16))
+            if pointNumberStr.count >= 10 {
+                pointNumberStr = String(pointNumberStr.prefix(10))
             }
         }
         
@@ -316,7 +320,7 @@ class CalculatorViewController: UIViewController {
     func formatDoubleStr2String(_ text: String) -> String {
         var formatStr: String = ""
         let myFormatter = NumberFormatter()
-        myFormatter.positiveFormat = "#,##0.##############"
+        myFormatter.positiveFormat = "#,##0.###"
 
         if let number = myFormatter.number(from: text) {
             formatStr = "\(number.doubleValue)"
